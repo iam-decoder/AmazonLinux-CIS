@@ -19,12 +19,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ## END COPYRIGHT NOTICE ##
 # tasks file for AmazonLinuxCIS
-- name: Check OS version and family
+- name: Check OS family
+  fail:
+      msg: "This role can only be run against Amazon Linux 1. {{ ansible_distribution }} is not supported."
+  when:
+      - ansible_distribution != 'Amazon'
+  tags:
+      - always
+
+- name: Check OS version
   fail:
       msg: "This role can only be run against Amazon Linux 1. {{ ansible_distribution }} {{ansible_distribution_version }} is not supported."
   when:
-      - ansible_distribution == 'Amazon'
-      - ansible_distribution_version is version('2', '!=')
+      - ansible_distribution_version is version('2017.09', '<') or ansible_distribution_version is version('2', '==')
   tags:
       - always
 
